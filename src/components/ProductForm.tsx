@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import { useNutrition } from '../context/NutritionContext';
+import React, { useState } from "react";
+import { useNutrition } from "../context/NutritionContext";
 
 interface ProductFormData {
   name: string;
   carbs: string;
   salt: string;
-  unit: 'liter' | 'item';
+  unit: "liter" | "item";
 }
 
 const defaultProduct: ProductFormData = {
-  name: '',
-  carbs: '',
-  salt: '',
-  unit: 'liter',
+  name: "",
+  carbs: "",
+  salt: "",
+  unit: "liter",
 };
 
 const ProductForm: React.FC = () => {
   const { dispatch } = useNutrition();
   const [product, setProduct] = useState<ProductFormData>(defaultProduct);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ): void => {
     const { name, value } = e.target;
     setProduct((p) => ({ ...p, [name]: value }));
   };
@@ -28,7 +30,7 @@ const ProductForm: React.FC = () => {
     e.preventDefault();
     if (!product.name) return;
     dispatch({
-      type: 'ADD_PRODUCT',
+      type: "ADD_PRODUCT",
       product: {
         ...product,
         id: Date.now(),
@@ -69,7 +71,12 @@ const ProductForm: React.FC = () => {
         step="any"
         style={{ width: 120, marginRight: 8 }}
       />
-      <select name="unit" value={product.unit} onChange={handleChange} style={{ marginRight: 8 }}>
+      <select
+        name="unit"
+        value={product.unit}
+        onChange={handleChange}
+        style={{ marginRight: 8 }}
+      >
         <option value="liter">liter</option>
         <option value="item">item</option>
       </select>
@@ -78,4 +85,4 @@ const ProductForm: React.FC = () => {
   );
 };
 
-export default ProductForm; 
+export default ProductForm;

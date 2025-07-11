@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useNutrition } from '../context/NutritionContext';
-import { Stage } from '../types/nutrition';
+import React, { useState, useEffect } from "react";
+import { useNutrition } from "../context/NutritionContext";
+import { Stage } from "../types/nutrition";
 
 function pad(num: number): string {
-  return num.toString().padStart(2, '0');
+  return num.toString().padStart(2, "0");
 }
 
 function parseTime(str: string): number {
   // Accepts 'h:mm' or 'mm' format
-  const [h, m] = str.includes(':') ? str.split(':') : ['0', str];
+  const [h, m] = str.includes(":") ? str.split(":") : ["0", str];
   return parseInt(h, 10) * 60 + parseInt(m, 10);
 }
 
@@ -53,7 +53,7 @@ const RaceStages: React.FC = () => {
       } catch {
         mins = 0;
       }
-      dispatch({ type: 'UPDATE_STAGE', stage: { ...stage, duration: mins } });
+      dispatch({ type: "UPDATE_STAGE", stage: { ...stage, duration: mins } });
     }
   };
 
@@ -61,11 +61,17 @@ const RaceStages: React.FC = () => {
     // Reset to last valid value if input is invalid
     const valid = /^\d{1,2}(:\d{1,2})?$/.test(value);
     if (!valid) {
-      setInputs((inputs) => ({ ...inputs, [stage.id]: formatTime(stage.duration) }));
+      setInputs((inputs) => ({
+        ...inputs,
+        [stage.id]: formatTime(stage.duration),
+      }));
     }
   };
 
-  const totalMinutes = state.stages.reduce((sum, s) => sum + (s.duration || 0), 0);
+  const totalMinutes = state.stages.reduce(
+    (sum, s) => sum + (s.duration || 0),
+    0,
+  );
 
   return (
     <section>
@@ -89,10 +95,11 @@ const RaceStages: React.FC = () => {
         ))}
       </ul>
       <div>
-        <strong>Total Race Time:</strong> {formatTime(totalMinutes)} ({totalMinutes} min)
+        <strong>Total Race Time:</strong> {formatTime(totalMinutes)} (
+        {totalMinutes} min)
       </div>
     </section>
   );
 };
 
-export default RaceStages; 
+export default RaceStages;

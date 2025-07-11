@@ -1,6 +1,6 @@
-import React from 'react';
-import { NutritionProvider } from './context/NutritionContext';
-import RacePlanBuilder from './components/RacePlanBuilder';
+import React from "react";
+import { NutritionProvider } from "./context/NutritionContext";
+import RacePlanBuilder from "./components/RacePlanBuilder";
 
 const App: React.FC = () => {
   return (
@@ -10,4 +10,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App; 
+export default App;

@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   carbs: number;
   salt: number;
-  unit: 'liter' | 'item';
+  unit: "liter" | "item";
 }
 
 export interface Stage {
@@ -24,14 +24,19 @@ export interface NutritionState {
 }
 
 export type NutritionAction =
-  | { type: 'SET_PRODUCTS'; products: Product[] }
-  | { type: 'ADD_PRODUCT'; product: Product }
-  | { type: 'UPDATE_PRODUCT'; product: Product }
-  | { type: 'SET_STAGES'; stages: Stage[] }
-  | { type: 'UPDATE_STAGE'; stage: Stage }
-  | { type: 'ASSIGN_PRODUCT'; stageId: string | number; productId: number; quantity: number };
+  | { type: "SET_PRODUCTS"; products: Product[] }
+  | { type: "ADD_PRODUCT"; product: Product }
+  | { type: "UPDATE_PRODUCT"; product: Product }
+  | { type: "SET_STAGES"; stages: Stage[] }
+  | { type: "UPDATE_STAGE"; stage: Stage }
+  | {
+      type: "ASSIGN_PRODUCT";
+      stageId: string | number;
+      productId: number;
+      quantity: number;
+    };
 
 export interface NutritionContextType {
   state: NutritionState;
   dispatch: React.Dispatch<NutritionAction>;
-} 
+}
