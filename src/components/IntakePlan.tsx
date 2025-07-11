@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useNutrition } from "../context/NutritionContext";
-import { Product, Stage, Assignment } from "../types/nutrition";
+import React, { useState } from 'react';
+import { useNutrition } from '../context/NutritionContext';
+import { Product, Stage, Assignment } from '../types/nutrition';
 
 interface Totals {
   totalCarbs: number;
@@ -19,18 +19,18 @@ function computeTotals(
   assignments: Record<string, Assignment[]>,
   products: Product[],
   stageKey: string | number,
-  durationMin: number,
+  durationMin: number
 ): Totals {
   let totalCarbs = 0;
   let totalSalt = 0;
   let totalFluid = 0;
   const assigned = assignments[stageKey.toString()] || [];
   assigned.forEach(({ productId, quantity }) => {
-    const product = products.find((p) => p.id === productId);
+    const product = products.find(p => p.id === productId);
     if (!product) return;
     totalCarbs += product.carbs * quantity;
     totalSalt += product.salt * quantity;
-    if (product.unit === "liter") {
+    if (product.unit === 'liter') {
       totalFluid += quantity;
     }
   });
@@ -50,20 +50,15 @@ function computeTotals(
 function computeRaceTotals(
   assignments: Record<string, Assignment[]>,
   products: Product[],
-  stages: Stage[],
+  stages: Stage[]
 ): RaceTotals {
   // Sum all stages
   let totalCarbs = 0;
   let totalSalt = 0;
   let totalFluid = 0;
   let totalMinutes = 0;
-  stages.forEach((stage) => {
-    const totals = computeTotals(
-      assignments,
-      products,
-      stage.id,
-      stage.duration || 0,
-    );
+  stages.forEach(stage => {
+    const totals = computeTotals(assignments, products, stage.id, stage.duration || 0);
     totalCarbs += totals.totalCarbs;
     totalSalt += totals.totalSalt;
     totalFluid += totals.totalFluid;
@@ -85,47 +80,34 @@ function computeRaceTotals(
 
 const IntakePlan: React.FC = () => {
   const { state, dispatch } = useNutrition();
-  const [selectedProducts, setSelectedProducts] = useState<
-    Record<number, number>
-  >({});
+  const [selectedProducts, setSelectedProducts] = useState<Record<number, number>>({});
 
-  const handleAmountChange = (
-    stageId: number,
-    productId: number,
-    value: string,
-  ): void => {
+  const handleAmountChange = (stageId: number, productId: number, value: string): void => {
     const quantity = parseFloat(value) || 0;
-    dispatch({ type: "ASSIGN_PRODUCT", stageId, productId, quantity });
+    dispatch({ type: 'ASSIGN_PRODUCT', stageId, productId, quantity });
   };
 
   const handleAddProduct = (stageId: number): void => {
     const productId = selectedProducts[stageId];
     if (productId) {
-      dispatch({ type: "ASSIGN_PRODUCT", stageId, productId, quantity: 1 });
-      setSelectedProducts((prev) => ({ ...prev, [stageId]: 0 }));
+      dispatch({ type: 'ASSIGN_PRODUCT', stageId, productId, quantity: 1 });
+      setSelectedProducts(prev => ({ ...prev, [stageId]: 0 }));
     }
   };
 
   const handleRemoveProduct = (stageId: number, productId: number): void => {
-    dispatch({ type: "ASSIGN_PRODUCT", stageId, productId, quantity: 0 });
+    dispatch({ type: 'ASSIGN_PRODUCT', stageId, productId, quantity: 0 });
   };
 
-  const getAssignments = (stageKey: string | number): Assignment[] =>
-    state.assignments[stageKey.toString()] || [];
+  const getAssignments = (stageKey: string | number): Assignment[] => state.assignments[stageKey.toString()] || [];
 
   const getAvailableProducts = (stageId: number): Product[] => {
-    const assignedProductIds = getAssignments(stageId).map((a) => a.productId);
-    return state.products.filter((p) => !assignedProductIds.includes(p.id));
+    const assignedProductIds = getAssignments(stageId).map(a => a.productId);
+    return state.products.filter(p => !assignedProductIds.includes(p.id));
   };
 
-  const assignableStages = state.stages.filter(
-    (s) => s.name === "Swim" || s.name === "Bike" || s.name === "Run",
-  );
-  const raceTotals = computeRaceTotals(
-    state.assignments,
-    state.products,
-    state.stages,
-  );
+  const assignableStages = state.stages.filter(s => s.name === 'Swim' || s.name === 'Bike' || s.name === 'Run');
+  const raceTotals = computeRaceTotals(state.assignments, state.products, state.stages);
 
   return (
     <section>
@@ -144,15 +126,15 @@ const IntakePlan: React.FC = () => {
                 style={{
                   marginBottom: 16,
                   padding: 12,
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: '#f5f5f5',
                   borderRadius: 4,
                 }}
               >
                 <h4>Add Product</h4>
                 <select
-                  value={selectedProducts[stage.id] || ""}
-                  onChange={(e) =>
-                    setSelectedProducts((prev) => ({
+                  value={selectedProducts[stage.id] || ''}
+                  onChange={e =>
+                    setSelectedProducts(prev => ({
                       ...prev,
                       [stage.id]: parseInt(e.target.value) || 0,
                     }))
@@ -160,7 +142,7 @@ const IntakePlan: React.FC = () => {
                   style={{ marginRight: 8 }}
                 >
                   <option value="">Select a product...</option>
-                  {availableProducts.map((product) => (
+                  {availableProducts.map(product => (
                     <option key={product.id} value={product.id}>
                       {product.name}
                     </option>
@@ -169,7 +151,7 @@ const IntakePlan: React.FC = () => {
                 <button
                   onClick={() => handleAddProduct(stage.id)}
                   disabled={!selectedProducts[stage.id]}
-                  style={{ padding: "4px 8px" }}
+                  style={{ padding: '4px 8px' }}
                 >
                   Add
                 </button>
@@ -178,9 +160,7 @@ const IntakePlan: React.FC = () => {
 
             {/* Assigned Products */}
             {assignments.length === 0 ? (
-              <div style={{ fontStyle: "italic", color: "#666" }}>
-                No products assigned to this stage.
-              </div>
+              <div style={{ fontStyle: 'italic', color: '#666' }}>No products assigned to this stage.</div>
             ) : (
               <>
                 <table>
@@ -192,10 +172,8 @@ const IntakePlan: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {assignments.map((assignment) => {
-                      const product = state.products.find(
-                        (p) => p.id === assignment.productId,
-                      );
+                    {assignments.map(assignment => {
+                      const product = state.products.find(p => p.id === assignment.productId);
                       if (!product) return null;
 
                       return (
@@ -207,26 +185,15 @@ const IntakePlan: React.FC = () => {
                               min="0"
                               step="any"
                               value={assignment.quantity}
-                              onChange={(e) =>
-                                handleAmountChange(
-                                  stage.id,
-                                  assignment.productId,
-                                  e.target.value,
-                                )
-                              }
+                              onChange={e => handleAmountChange(stage.id, assignment.productId, e.target.value)}
                               style={{ width: 80 }}
-                            />{" "}
+                            />{' '}
                             <span>{product.unit}</span>
                           </td>
                           <td>
                             <button
-                              onClick={() =>
-                                handleRemoveProduct(
-                                  stage.id,
-                                  assignment.productId,
-                                )
-                              }
-                              style={{ padding: "2px 6px", fontSize: "12px" }}
+                              onClick={() => handleRemoveProduct(stage.id, assignment.productId)}
+                              style={{ padding: '2px 6px', fontSize: '12px' }}
                             >
                               Remove
                             </button>
@@ -239,21 +206,14 @@ const IntakePlan: React.FC = () => {
 
                 {/* Stage Totals */}
                 {(() => {
-                  const totals = computeTotals(
-                    state.assignments,
-                    state.products,
-                    stage.id,
-                    stage.duration,
-                  );
+                  const totals = computeTotals(state.assignments, state.products, stage.id, stage.duration);
                   return (
                     <div style={{ marginTop: 8 }}>
-                      <strong>Total:</strong> Carbs: {totals.totalCarbs} g,
-                      Salt: {totals.totalSalt} g, Fluid: {totals.totalFluid} L
+                      <strong>Total:</strong> Carbs: {totals.totalCarbs} g, Salt: {totals.totalSalt} g, Fluid:{' '}
+                      {totals.totalFluid} L
                       <br />
-                      <strong>Per hour:</strong> Carbs:{" "}
-                      {totals.rateCarbs.toFixed(1)} g/h, Salt:{" "}
-                      {totals.rateSalt.toFixed(1)} g/h, Fluid:{" "}
-                      {totals.rateFluid.toFixed(2)} L/h
+                      <strong>Per hour:</strong> Carbs: {totals.rateCarbs.toFixed(1)} g/h, Salt:{' '}
+                      {totals.rateSalt.toFixed(1)} g/h, Fluid: {totals.rateFluid.toFixed(2)} L/h
                     </div>
                   );
                 })()}
@@ -265,25 +225,21 @@ const IntakePlan: React.FC = () => {
               <div
                 style={{
                   marginTop: 32,
-                  borderTop: "1px solid #ccc",
+                  borderTop: '1px solid #ccc',
                   paddingTop: 16,
                 }}
               >
                 <h3>Intake Summary (Total for Race)</h3>
                 <div>
-                  <strong>Total:</strong> Carbs: {raceTotals.totalCarbs} g,
-                  Salt: {raceTotals.totalSalt} g, Fluid: {raceTotals.totalFluid}{" "}
-                  L
+                  <strong>Total:</strong> Carbs: {raceTotals.totalCarbs} g, Salt: {raceTotals.totalSalt} g, Fluid:{' '}
+                  {raceTotals.totalFluid} L
                 </div>
                 <div>
-                  <strong>Per hour (whole race):</strong> Carbs:{" "}
-                  {raceTotals.rateCarbs.toFixed(1)} g/h, Salt:{" "}
-                  {raceTotals.rateSalt.toFixed(1)} g/h, Fluid:{" "}
-                  {raceTotals.rateFluid.toFixed(2)} L/h
+                  <strong>Per hour (whole race):</strong> Carbs: {raceTotals.rateCarbs.toFixed(1)} g/h, Salt:{' '}
+                  {raceTotals.rateSalt.toFixed(1)} g/h, Fluid: {raceTotals.rateFluid.toFixed(2)} L/h
                 </div>
                 <div>
-                  <strong>Total race time:</strong> {raceTotals.totalMinutes}{" "}
-                  min
+                  <strong>Total race time:</strong> {raceTotals.totalMinutes} min
                 </div>
               </div>
             )}

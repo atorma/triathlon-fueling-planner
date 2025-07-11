@@ -1,20 +1,16 @@
-import React from "react";
-import { useNutrition } from "../context/NutritionContext";
-import { Product } from "../types/nutrition";
+import React from 'react';
+import { useNutrition } from '../context/NutritionContext';
+import { Product } from '../types/nutrition';
 
 const ProductList: React.FC = () => {
   const { state, dispatch } = useNutrition();
 
-  const handleChange = (
-    product: Product,
-    field: keyof Product,
-    value: string | number,
-  ): void => {
+  const handleChange = (product: Product, field: keyof Product, value: string | number): void => {
     let updated = { ...product, [field]: value };
-    if (field === "carbs" || field === "salt") {
+    if (field === 'carbs' || field === 'salt') {
       updated[field] = parseFloat(value as string) || 0;
     }
-    dispatch({ type: "UPDATE_PRODUCT", product: updated });
+    dispatch({ type: 'UPDATE_PRODUCT', product: updated });
   };
 
   if (!state.products.length) return <div>No products added yet.</div>;
@@ -30,13 +26,13 @@ const ProductList: React.FC = () => {
         </tr>
       </thead>
       <tbody>
-        {state.products.map((p) => (
+        {state.products.map(p => (
           <tr key={p.id}>
             <td>
               <input
                 name="name"
                 value={p.name}
-                onChange={(e) => handleChange(p, "name", e.target.value)}
+                onChange={e => handleChange(p, 'name', e.target.value)}
                 style={{ width: 100 }}
               />
             </td>
@@ -45,7 +41,7 @@ const ProductList: React.FC = () => {
                 name="carbs"
                 type="number"
                 value={p.carbs}
-                onChange={(e) => handleChange(p, "carbs", e.target.value)}
+                onChange={e => handleChange(p, 'carbs', e.target.value)}
                 style={{ width: 80 }}
               />
             </td>
@@ -54,7 +50,7 @@ const ProductList: React.FC = () => {
                 name="salt"
                 type="number"
                 value={p.salt}
-                onChange={(e) => handleChange(p, "salt", e.target.value)}
+                onChange={e => handleChange(p, 'salt', e.target.value)}
                 style={{ width: 80 }}
               />
             </td>
@@ -62,9 +58,7 @@ const ProductList: React.FC = () => {
               <select
                 name="unit"
                 value={p.unit}
-                onChange={(e) =>
-                  handleChange(p, "unit", e.target.value as "liter" | "item")
-                }
+                onChange={e => handleChange(p, 'unit', e.target.value as 'liter' | 'item')}
               >
                 <option value="liter">liter</option>
                 <option value="item">item</option>

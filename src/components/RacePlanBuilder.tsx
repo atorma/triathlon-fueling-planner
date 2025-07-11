@@ -1,8 +1,8 @@
-import React from "react";
-import ProductForm from "./ProductForm";
-import ProductList from "./ProductList";
-import IntakePlan from "./IntakePlan";
-import RaceStages from "./RaceStages";
+import React from 'react';
+import ProductForm from './ProductForm';
+import ProductList from './ProductList';
+import IntakePlan from './IntakePlan';
+import RaceStages from './RaceStages';
 
 const RacePlanBuilder: React.FC = () => {
   return (
