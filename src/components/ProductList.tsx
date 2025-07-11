@@ -20,8 +20,8 @@ const ProductList: React.FC = () => {
       <thead>
         <tr>
           <th>Name</th>
-          <th>Carbs (g/unit)</th>
-          <th>Sodium (mg/unit)</th>
+          <th>Carbs</th>
+          <th>Sodium</th>
           <th>Unit</th>
         </tr>
       </thead>

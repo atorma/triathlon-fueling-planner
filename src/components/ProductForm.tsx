@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNutrition } from '../context/NutritionContext';
-import { Product } from '../types/nutrition';
 
 interface ProductFormData {
   name: string;
