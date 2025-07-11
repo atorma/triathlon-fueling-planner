@@ -60,7 +60,7 @@ const ProductList: React.FC = () => {
                       type="number"
                       value={product.carbs}
                       onChange={e => handleChange(product, 'carbs', e.target.value)}
-                      className="w-20"
+                      className="w-28"
                     />
                   </td>
                   <td className="p-2">
@@ -69,7 +69,7 @@ const ProductList: React.FC = () => {
                       type="number"
                       value={product.salt}
                       onChange={e => handleChange(product, 'salt', e.target.value)}
-                      className="w-20"
+                      className="w-28"
                     />
                   </td>
                   <td className="p-2">

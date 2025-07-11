@@ -70,7 +70,38 @@ function nutritionReducer(state: NutritionState, action: NutritionAction): Nutri
       const { stageId, productId, quantity } = action;
       const stageKey = stageId.toString();
       const prev = state.assignments[stageKey] || [];
-      const updated = prev.filter(a => a.productId !== productId).concat({ productId, quantity });
+
+      // Add new product to the end
+      const updated = [...prev, { productId, quantity }];
+      return {
+        ...state,
+        assignments: { ...state.assignments, [stageKey]: updated },
+      };
+    }
+    case 'UPDATE_PRODUCT_QUANTITY': {
+      const { stageId, productId, quantity } = action;
+      const stageKey = stageId.toString();
+      const prev = state.assignments[stageKey] || [];
+
+      // Update existing product in place (preserve order)
+      const existingIndex = prev.findIndex(a => a.productId === productId);
+      if (existingIndex >= 0) {
+        const updated = [...prev];
+        updated[existingIndex] = { productId, quantity };
+        return {
+          ...state,
+          assignments: { ...state.assignments, [stageKey]: updated },
+        };
+      }
+      return state; // Product not found, no change
+    }
+    case 'REMOVE_PRODUCT': {
+      const { stageId, productId } = action;
+      const stageKey = stageId.toString();
+      const prev = state.assignments[stageKey] || [];
+
+      // Remove the product assignment
+      const updated = prev.filter(a => a.productId !== productId);
       return {
         ...state,
         assignments: { ...state.assignments, [stageKey]: updated },

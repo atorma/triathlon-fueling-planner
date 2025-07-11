@@ -87,10 +87,16 @@ function computeRaceTotals(
 const IntakePlan: React.FC = () => {
   const { state, dispatch } = useNutrition();
   const [selectedProducts, setSelectedProducts] = useState<Record<number, number>>({});
+  const [inputValues, setInputValues] = useState<Record<string, string>>({});
 
   const handleAmountChange = (stageId: number, productId: number, value: string): void => {
-    const quantity = parseFloat(value) || 0;
-    dispatch({ type: 'ASSIGN_PRODUCT', stageId, productId, quantity });
+    const key = `${stageId}-${productId}`;
+    setInputValues(prev => ({ ...prev, [key]: value }));
+
+    const quantity = parseFloat(value);
+    if (!isNaN(quantity)) {
+      dispatch({ type: 'UPDATE_PRODUCT_QUANTITY', stageId, productId, quantity });
+    }
   };
 
   const handleAddProduct = (stageId: number): void => {
@@ -102,7 +108,7 @@ const IntakePlan: React.FC = () => {
   };
 
   const handleRemoveProduct = (stageId: number, productId: number): void => {
-    dispatch({ type: 'ASSIGN_PRODUCT', stageId, productId, quantity: 0 });
+    dispatch({ type: 'REMOVE_PRODUCT', stageId, productId });
   };
 
   const getAssignments = (stageKey: string | number): Assignment[] => state.assignments[stageKey.toString()] || [];
@@ -204,7 +210,10 @@ const IntakePlan: React.FC = () => {
                                     type="number"
                                     min="0"
                                     step="any"
-                                    value={assignment.quantity}
+                                    value={
+                                      inputValues[`${stage.id}-${assignment.productId}`] ??
+                                      assignment.quantity.toString()
+                                    }
                                     onChange={e => handleAmountChange(stage.id, assignment.productId, e.target.value)}
                                     className="w-20"
                                   />

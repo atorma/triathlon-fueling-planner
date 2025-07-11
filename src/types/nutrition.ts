@@ -34,6 +34,17 @@ export type NutritionAction =
       stageId: string | number;
       productId: number;
       quantity: number;
+    }
+  | {
+      type: 'UPDATE_PRODUCT_QUANTITY';
+      stageId: string | number;
+      productId: number;
+      quantity: number;
+    }
+  | {
+      type: 'REMOVE_PRODUCT';
+      stageId: string | number;
+      productId: number;
     };
 
 export interface NutritionContextType {
