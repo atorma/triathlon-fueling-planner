@@ -1,18 +1,20 @@
 import React from 'react';
 import { useNutrition } from '../context/NutritionContext';
+import { Product } from '../types/nutrition';
 
-export default function ProductList() {
+const ProductList: React.FC = () => {
   const { state, dispatch } = useNutrition();
 
-  const handleChange = (product, field, value) => {
+  const handleChange = (product: Product, field: keyof Product, value: string | number): void => {
     let updated = { ...product, [field]: value };
     if (field === 'carbs' || field === 'sodium') {
-      updated[field] = parseFloat(value) || 0;
+      updated[field] = parseFloat(value as string) || 0;
     }
     dispatch({ type: 'UPDATE_PRODUCT', product: updated });
   };
 
   if (!state.products.length) return <div>No products added yet.</div>;
+  
   return (
     <table style={{ marginBottom: 16 }}>
       <thead>
@@ -30,7 +32,7 @@ export default function ProductList() {
               <input
                 name="name"
                 value={p.name}
-                onChange={e => handleChange(p, 'name', e.target.value)}
+                onChange={(e) => handleChange(p, 'name', e.target.value)}
                 style={{ width: 100 }}
               />
             </td>
@@ -39,7 +41,7 @@ export default function ProductList() {
                 name="carbs"
                 type="number"
                 value={p.carbs}
-                onChange={e => handleChange(p, 'carbs', e.target.value)}
+                onChange={(e) => handleChange(p, 'carbs', e.target.value)}
                 style={{ width: 80 }}
               />
             </td>
@@ -48,7 +50,7 @@ export default function ProductList() {
                 name="sodium"
                 type="number"
                 value={p.sodium}
-                onChange={e => handleChange(p, 'sodium', e.target.value)}
+                onChange={(e) => handleChange(p, 'sodium', e.target.value)}
                 style={{ width: 80 }}
               />
             </td>
@@ -56,7 +58,7 @@ export default function ProductList() {
               <select
                 name="unit"
                 value={p.unit}
-                onChange={e => handleChange(p, 'unit', e.target.value)}
+                onChange={(e) => handleChange(p, 'unit', e.target.value as 'liter' | 'item')}
               >
                 <option value="liter">liter</option>
                 <option value="item">item</option>
@@ -67,4 +69,6 @@ export default function ProductList() {
       </tbody>
     </table>
   );
-} 
+};
+
+export default ProductList; 

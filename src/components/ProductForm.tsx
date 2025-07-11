@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 import { useNutrition } from '../context/NutritionContext';
+import { Product } from '../types/nutrition';
 
-const defaultProduct = {
+interface ProductFormData {
+  name: string;
+  carbs: string;
+  sodium: string;
+  unit: 'liter' | 'item';
+}
+
+const defaultProduct: ProductFormData = {
   name: '',
   carbs: '',
   sodium: '',
   unit: 'liter',
 };
 
-export default function ProductForm() {
+const ProductForm: React.FC = () => {
   const { dispatch } = useNutrition();
-  const [product, setProduct] = useState(defaultProduct);
+  const [product, setProduct] = useState<ProductFormData>(defaultProduct);
 
-  const handleChange = e => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value } = e.target;
-    setProduct(p => ({ ...p, [name]: value }));
+    setProduct((p) => ({ ...p, [name]: value }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (!product.name) return;
     dispatch({
@@ -69,4 +77,6 @@ export default function ProductForm() {
       <button type="submit">Add Product</button>
     </form>
   );
-} 
+};
+
+export default ProductForm; 
