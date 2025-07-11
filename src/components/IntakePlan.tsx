@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useNutrition } from '../context/NutritionContext';
 import { Product, Stage, Assignment } from '../types/nutrition';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 interface Totals {
   totalCarbs: number;
@@ -110,143 +116,194 @@ const IntakePlan: React.FC = () => {
   const raceTotals = computeRaceTotals(state.assignments, state.products, state.stages);
 
   return (
-    <section>
-      <h2>Intake Plan</h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold">Intake Plan</h2>
       {assignableStages.map((stage, idx) => {
         const assignments = getAssignments(stage.id);
         const availableProducts = getAvailableProducts(stage.id);
 
         return (
-          <div key={stage.id} style={{ marginBottom: 24 }}>
-            <h3>{stage.name}</h3>
-
-            {/* Add Product Section */}
-            {availableProducts.length > 0 && (
-              <div
-                style={{
-                  marginBottom: 16,
-                  padding: 12,
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: 4,
-                }}
-              >
-                <h4>Add Product</h4>
-                <select
-                  value={selectedProducts[stage.id] || ''}
-                  onChange={e =>
-                    setSelectedProducts(prev => ({
-                      ...prev,
-                      [stage.id]: parseInt(e.target.value) || 0,
-                    }))
-                  }
-                  style={{ marginRight: 8 }}
-                >
-                  <option value="">Select a product...</option>
-                  {availableProducts.map(product => (
-                    <option key={product.id} value={product.id}>
-                      {product.name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => handleAddProduct(stage.id)}
-                  disabled={!selectedProducts[stage.id]}
-                  style={{ padding: '4px 8px' }}
-                >
-                  Add
-                </button>
-              </div>
-            )}
-
-            {/* Assigned Products */}
-            {assignments.length === 0 ? (
-              <div style={{ fontStyle: 'italic', color: '#666' }}>No products assigned to this stage.</div>
-            ) : (
-              <>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Amount</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {assignments.map(assignment => {
-                      const product = state.products.find(p => p.id === assignment.productId);
-                      if (!product) return null;
-
-                      return (
-                        <tr key={assignment.productId}>
-                          <td>{product.name}</td>
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-                              step="any"
-                              value={assignment.quantity}
-                              onChange={e => handleAmountChange(stage.id, assignment.productId, e.target.value)}
-                              style={{ width: 80 }}
-                            />{' '}
-                            <span>{product.unit}</span>
-                          </td>
-                          <td>
-                            <button
-                              onClick={() => handleRemoveProduct(stage.id, assignment.productId)}
-                              style={{ padding: '2px 6px', fontSize: '12px' }}
-                            >
-                              Remove
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-
-                {/* Stage Totals */}
-                {(() => {
-                  const totals = computeTotals(state.assignments, state.products, stage.id, stage.duration);
-                  return (
-                    <div style={{ marginTop: 8 }}>
-                      <strong>Total:</strong> Carbs: {totals.totalCarbs} g, Salt: {totals.totalSalt} g, Fluid:{' '}
-                      {totals.totalFluid} L
-                      <br />
-                      <strong>Per hour:</strong> Carbs: {totals.rateCarbs.toFixed(1)} g/h, Salt:{' '}
-                      {totals.rateSalt.toFixed(1)} g/h, Fluid: {totals.rateFluid.toFixed(2)} L/h
+          <Card key={stage.id}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Badge variant="outline">{stage.name}</Badge>
+                {stage.duration && <span className="text-sm text-muted-foreground">({stage.duration} min)</span>}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Add Product Section */}
+              {availableProducts.length > 0 && (
+                <Card className="bg-muted/50">
+                  <CardContent className="pt-4">
+                    <h4 className="font-medium mb-3">Add Product</h4>
+                    <div className="flex gap-2">
+                      <Select
+                        value={selectedProducts[stage.id]?.toString() || ''}
+                        onValueChange={value =>
+                          setSelectedProducts(prev => ({
+                            ...prev,
+                            [stage.id]: parseInt(value) || 0,
+                          }))
+                        }
+                      >
+                        <SelectTrigger className="w-64">
+                          <SelectValue placeholder="Select a product..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableProducts.map(product => (
+                            <SelectItem key={product.id} value={product.id.toString()}>
+                              {product.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        onClick={() => handleAddProduct(stage.id)}
+                        disabled={!selectedProducts[stage.id]}
+                        size="sm"
+                      >
+                        Add
+                      </Button>
                     </div>
-                  );
-                })()}
-              </>
-            )}
+                  </CardContent>
+                </Card>
+              )}
 
-            {/* Intake Summary after the Run leg */}
-            {idx === assignableStages.length - 1 && (
-              <div
-                style={{
-                  marginTop: 32,
-                  borderTop: '1px solid #ccc',
-                  paddingTop: 16,
-                }}
-              >
-                <h3>Intake Summary (Total for Race)</h3>
-                <div>
-                  <strong>Total:</strong> Carbs: {raceTotals.totalCarbs} g, Salt: {raceTotals.totalSalt} g, Fluid:{' '}
-                  {raceTotals.totalFluid} L
+              {/* Assigned Products */}
+              {assignments.length === 0 ? (
+                <div className="text-muted-foreground italic text-center py-4">No products assigned to this stage.</div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2 font-medium">Product</th>
+                          <th className="text-left p-2 font-medium">Amount</th>
+                          <th className="text-left p-2 font-medium">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {assignments.map(assignment => {
+                          const product = state.products.find(p => p.id === assignment.productId);
+                          if (!product) return null;
+
+                          return (
+                            <tr key={assignment.productId} className="border-b">
+                              <td className="p-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium">{product.name}</span>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {product.unit}
+                                  </Badge>
+                                </div>
+                              </td>
+                              <td className="p-2">
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="number"
+                                    min="0"
+                                    step="any"
+                                    value={assignment.quantity}
+                                    onChange={e => handleAmountChange(stage.id, assignment.productId, e.target.value)}
+                                    className="w-20"
+                                  />
+                                  <span className="text-sm text-muted-foreground">{product.unit}</span>
+                                </div>
+                              </td>
+                              <td className="p-2">
+                                <Button
+                                  onClick={() => handleRemoveProduct(stage.id, assignment.productId)}
+                                  variant="destructive"
+                                  size="sm"
+                                >
+                                  Remove
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Stage Totals */}
+                  {(() => {
+                    const totals = computeTotals(state.assignments, state.products, stage.id, stage.duration);
+                    return (
+                      <Card className="bg-primary/5">
+                        <CardContent className="pt-4">
+                          <h4 className="font-medium mb-2">Stage Summary</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                              <div className="font-medium">Total Carbs</div>
+                              <div className="text-muted-foreground">{totals.totalCarbs.toFixed(1)} g</div>
+                            </div>
+                            <div>
+                              <div className="font-medium">Total Salt</div>
+                              <div className="text-muted-foreground">{totals.totalSalt.toFixed(1)} g</div>
+                            </div>
+                            <div>
+                              <div className="font-medium">Total Fluid</div>
+                              <div className="text-muted-foreground">{totals.totalFluid.toFixed(2)} L</div>
+                            </div>
+                            <div>
+                              <div className="font-medium">Per Hour</div>
+                              <div className="text-muted-foreground">
+                                {totals.rateCarbs.toFixed(1)} g/h carbs, {totals.rateSalt.toFixed(1)} g/h salt,{' '}
+                                {totals.rateFluid.toFixed(2)} L/h fluid
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })()}
                 </div>
-                <div>
-                  <strong>Per hour (whole race):</strong> Carbs: {raceTotals.rateCarbs.toFixed(1)} g/h, Salt:{' '}
-                  {raceTotals.rateSalt.toFixed(1)} g/h, Fluid: {raceTotals.rateFluid.toFixed(2)} L/h
-                </div>
-                <div>
-                  <strong>Total race time:</strong> {raceTotals.totalMinutes} min
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+
+              {/* Intake Summary after the Run leg */}
+              {idx === assignableStages.length - 1 && (
+                <>
+                  <Separator />
+                  <Card className="bg-secondary/20">
+                    <CardHeader>
+                      <CardTitle>Race Summary</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <div className="font-medium">Total Intake</div>
+                          <div className="text-sm space-y-1">
+                            <div>Carbs: {raceTotals.totalCarbs.toFixed(1)} g</div>
+                            <div>Salt: {raceTotals.totalSalt.toFixed(1)} g</div>
+                            <div>Fluid: {raceTotals.totalFluid.toFixed(2)} L</div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="font-medium">Per Hour (Average)</div>
+                          <div className="text-sm space-y-1">
+                            <div>Carbs: {raceTotals.rateCarbs.toFixed(1)} g/h</div>
+                            <div>Salt: {raceTotals.rateSalt.toFixed(1)} g/h</div>
+                            <div>Fluid: {raceTotals.rateFluid.toFixed(2)} L/h</div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="font-medium">Race Duration</div>
+                          <div className="text-sm">
+                            {Math.floor(raceTotals.totalMinutes / 60)}h {raceTotals.totalMinutes % 60}m
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
+              )}
+            </CardContent>
+          </Card>
         );
       })}
-    </section>
+    </div>
   );
 };
 
