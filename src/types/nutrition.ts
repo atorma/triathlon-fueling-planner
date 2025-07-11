@@ -2,7 +2,7 @@ export interface Product {
   id: number;
   name: string;
   carbs: number;
-  sodium: number;
+  salt: number;
   unit: 'liter' | 'item';
 }
 

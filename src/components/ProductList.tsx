@@ -7,7 +7,7 @@ const ProductList: React.FC = () => {
 
   const handleChange = (product: Product, field: keyof Product, value: string | number): void => {
     let updated = { ...product, [field]: value };
-    if (field === 'carbs' || field === 'sodium') {
+    if (field === 'carbs' || field === 'salt') {
       updated[field] = parseFloat(value as string) || 0;
     }
     dispatch({ type: 'UPDATE_PRODUCT', product: updated });
@@ -20,8 +20,8 @@ const ProductList: React.FC = () => {
       <thead>
         <tr>
           <th>Name</th>
-          <th>Carbs</th>
-          <th>Sodium</th>
+          <th>Carbs g/unit</th>
+          <th>Salt g/unit</th>
           <th>Unit</th>
         </tr>
       </thead>
@@ -47,10 +47,10 @@ const ProductList: React.FC = () => {
             </td>
             <td>
               <input
-                name="sodium"
+                name="salt"
                 type="number"
-                value={p.sodium}
-                onChange={(e) => handleChange(p, 'sodium', e.target.value)}
+                value={p.salt}
+                onChange={(e) => handleChange(p, 'salt', e.target.value)}
                 style={{ width: 80 }}
               />
             </td>

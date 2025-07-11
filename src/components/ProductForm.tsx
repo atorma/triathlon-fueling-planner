@@ -4,14 +4,14 @@ import { useNutrition } from '../context/NutritionContext';
 interface ProductFormData {
   name: string;
   carbs: string;
-  sodium: string;
+  salt: string;
   unit: 'liter' | 'item';
 }
 
 const defaultProduct: ProductFormData = {
   name: '',
   carbs: '',
-  sodium: '',
+  salt: '',
   unit: 'liter',
 };
 
@@ -33,7 +33,7 @@ const ProductForm: React.FC = () => {
         ...product,
         id: Date.now(),
         carbs: parseFloat(product.carbs) || 0,
-        sodium: parseFloat(product.sodium) || 0,
+        salt: parseFloat(product.salt) || 0,
       },
     });
     setProduct(defaultProduct);
@@ -60,10 +60,10 @@ const ProductForm: React.FC = () => {
         style={{ width: 100, marginRight: 8 }}
       />
       <input
-        name="sodium"
-        placeholder="Sodium (mg/unit)"
+        name="salt"
+        placeholder="Salt (g/unit)"
         type="number"
-        value={product.sodium}
+        value={product.salt}
         onChange={handleChange}
         min="0"
         step="any"
