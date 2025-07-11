@@ -17,7 +17,7 @@ const initialState: NutritionState = {
   stages: [
     { id: 1, name: 'Swim', duration: 30 },
     { id: 2, name: 'T1', duration: 4 },
-    { id: 3, name: 'Bike', duration: 110 },
+    { id: 3, name: 'Bike', duration: 70 },
     { id: 4, name: 'T2', duration: 2 },
     { id: 5, name: 'Run', duration: 42 },
   ],
