@@ -4,7 +4,16 @@ import { NutritionState, NutritionAction, NutritionContextType } from '../types/
 const NutritionContext = createContext<NutritionContextType | undefined>(undefined);
 
 const initialState: NutritionState = {
-  products: [],
+  products: [
+    { id: 1, name: 'Maxim energy drink', carbs: 72, sodium: 416, unit: 'liter' },
+    { id: 2, name: "Dexal light", carbs: 37, sodium: 44, unit: 'liter'},
+    { id: 3, name: "Nosht high energy drink", carbs: 100, sodium: 1200, unit: 'liter'},
+    { id: 4, name: 'Maurten 320 drink mix', carbs: 156, sodium: 496, unit: 'liter' },
+    { id: 5, name: 'Water', carbs: 0, sodium: 1, unit: 'liter' },
+    { id: 6, name: 'Dexal energy gel', carbs: 17, sodium: 160, unit: 'item' },
+    { id: 7, name: 'HartSport energy candy', carbs: 4.35, sodium: 18, unit: 'item' },
+    { id: 8, name: 'Jollos energy candy', carbs: 10, sodium: 15.6, unit: 'item' },
+  ],
   stages: [
     { id: 1, name: 'Swim', duration: 30 },
     { id: 2, name: 'T1', duration: 4 },
