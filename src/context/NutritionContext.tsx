@@ -5,37 +5,37 @@ const NutritionContext = createContext<NutritionContextType | undefined>(undefin
 
 const initialState: NutritionState = {
   products: [
-    { id: 1, name: 'Maxim energy drink', carbs: 72, salt: 1.04, unit: 'liter' },
-    { id: 2, name: 'Dexal light', carbs: 37, salt: 0.11, unit: 'liter' },
+    { id: 1, name: 'Maxim energy drink', carbs: 72, salt: 1.04, unit: 'liters' },
+    { id: 2, name: 'Dexal light', carbs: 37, salt: 0.11, unit: 'liters' },
     {
       id: 3,
       name: 'Nosht high energy drink',
       carbs: 100,
       salt: 3.0,
-      unit: 'liter',
+      unit: 'liters',
     },
     {
       id: 4,
       name: 'Maurten 320 drink mix',
       carbs: 156,
       salt: 1.24,
-      unit: 'liter',
+      unit: 'liters',
     },
-    { id: 5, name: 'Water', carbs: 0, salt: 0.0025, unit: 'liter' },
-    { id: 6, name: 'Dexal energy gel', carbs: 17, salt: 0.4, unit: 'item' },
+    { id: 5, name: 'Water', carbs: 0, salt: 0.0025, unit: 'liters' },
+    { id: 6, name: 'Dexal energy gel', carbs: 17, salt: 0.4, unit: 'items' },
     {
       id: 7,
       name: 'HartSport energy candy',
       carbs: 4.35,
       salt: 0.045,
-      unit: 'item',
+      unit: 'items',
     },
     {
       id: 8,
       name: 'Jollos energy candy',
       carbs: 10,
       salt: 0.039,
-      unit: 'item',
+      unit: 'items',
     },
   ],
   stages: [

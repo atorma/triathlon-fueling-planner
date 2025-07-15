@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   carbs: number;
   salt: number;
-  unit: 'liter' | 'item';
+  unit: 'liters' | 'items' | 'grams';
 }
 
 export interface Stage {

@@ -10,14 +10,14 @@ interface ProductFormData {
   name: string;
   carbs: string;
   salt: string;
-  unit: 'liter' | 'item';
+  unit: 'liters' | 'items' | 'grams';
 }
 
 const defaultProduct: ProductFormData = {
   name: '',
   carbs: '',
   salt: '',
-  unit: 'liter',
+  unit: 'liters',
 };
 
 const ProductForm: React.FC = () => {
@@ -98,8 +98,9 @@ const ProductForm: React.FC = () => {
                   <SelectValue placeholder="Select unit" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="liter">Liter</SelectItem>
-                  <SelectItem value="item">Item</SelectItem>
+                  <SelectItem value="liters">Liters</SelectItem>
+                  <SelectItem value="items">Items</SelectItem>
+                  <SelectItem value="grams">Grams</SelectItem>
                 </SelectContent>
               </Select>
             </div>

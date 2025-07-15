@@ -75,14 +75,15 @@ const ProductList: React.FC = () => {
                   <td className="p-2">
                     <Select
                       value={product.unit}
-                      onValueChange={value => handleChange(product, 'unit', value as 'liter' | 'item')}
+                      onValueChange={value => handleChange(product, 'unit', value as 'liters' | 'items' | 'grams')}
                     >
                       <SelectTrigger className="w-24">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="liter">Liter</SelectItem>
-                        <SelectItem value="item">Item</SelectItem>
+                        <SelectItem value="liters">Liters</SelectItem>
+                        <SelectItem value="items">Items</SelectItem>
+                        <SelectItem value="grams">Grams</SelectItem>
                       </SelectContent>
                     </Select>
                   </td>
@@ -94,8 +95,8 @@ const ProductList: React.FC = () => {
 
         <div className="mt-4 flex flex-wrap gap-2">
           <Badge variant="secondary">Total Products: {state.products.length}</Badge>
-          <Badge variant="outline">Fluids: {state.products.filter(p => p.unit === 'liter').length}</Badge>
-          <Badge variant="outline">Solids: {state.products.filter(p => p.unit === 'item').length}</Badge>
+          <Badge variant="outline">Fluids: {state.products.filter(p => p.unit === 'liters').length}</Badge>
+          <Badge variant="outline">Solids: {state.products.filter(p => p.unit === 'items').length}</Badge>
         </div>
       </CardContent>
     </Card>
