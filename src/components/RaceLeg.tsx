@@ -73,7 +73,9 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
   };
 
   const assignedProductIds = assignments.map(a => a.productId);
-  const availableProducts = state.products.filter(p => !assignedProductIds.includes(p.id));
+  const availableProducts = state.products
+    .filter(p => !assignedProductIds.includes(p.id))
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 
   // Stage totals calculation (copied from IntakePlan)
   let totalCarbs = 0;
