@@ -73,30 +73,38 @@ const IntakePlan: React.FC = () => {
           <CardTitle>Race Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <div className="font-medium">Race Duration</div>
-              <div className="text-sm">
-                {Math.floor(raceTotals.totalMinutes / 60)}h {raceTotals.totalMinutes % 60}m
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="font-medium">Per Hour (Average)</div>
-              <div className="text-sm space-y-1">
-                <div>Carbs: {raceTotals.rateCarbs.toFixed(1)} g/h</div>
-                <div>Salt: {raceTotals.rateSalt.toFixed(1)} g/h</div>
-                <div>Fluid: {raceTotals.rateFluid.toFixed(1)} L/h</div>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="font-medium">Total Intake</div>
-              <div className="text-sm space-y-1">
-                <div>Carbs: {raceTotals.totalCarbs.toFixed(1)} g</div>
-                <div>Salt: {raceTotals.totalSalt.toFixed(1)} g</div>
-                <div>Fluid: {raceTotals.totalFluid.toFixed(1)} L</div>
-              </div>
+          <div className="mb-4">
+            <div className="font-medium">Race Duration</div>
+            <div className="text-sm">
+              {Math.floor(raceTotals.totalMinutes / 60)}h {raceTotals.totalMinutes % 60}m
             </div>
           </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-1 font-medium">Nutrient</th>
+                <th className="text-left p-1 font-medium">Intake Rate</th>
+                <th className="text-left p-1 font-medium">Total Intake</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="p-1 text-sm">Carbs</td>
+                <td className="p-1 text-sm">{raceTotals.rateCarbs.toFixed(1)} g/h</td>
+                <td className="p-1 text-sm">{raceTotals.totalCarbs.toFixed(1)} g</td>
+              </tr>
+              <tr>
+                <td className="p-1 text-sm">Salt</td>
+                <td className="p-1 text-sm">{raceTotals.rateSalt.toFixed(1)} g/h</td>
+                <td className="p-1 text-sm">{raceTotals.totalSalt.toFixed(1)} g</td>
+              </tr>
+              <tr>
+                <td className="p-1 text-sm">Fluid</td>
+                <td className="p-1 text-sm">{raceTotals.rateFluid.toFixed(1)} L/h</td>
+                <td className="p-1 text-sm">{raceTotals.totalFluid.toFixed(1)} L</td>
+              </tr>
+            </tbody>
+          </table>
         </CardContent>
       </Card>
     </div>

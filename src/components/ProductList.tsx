@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNutrition } from '../context/NutritionContext';
 import { Product } from '../types/nutrition';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,17 @@ import { Button } from '@/components/ui/button';
 
 const ProductList: React.FC = () => {
   const { state, dispatch } = useNutrition();
+  const [sortKey, setSortKey] = useState<'name' | 'carbs' | 'salt' | 'unit'>('name');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+
+  const handleSort = (key: 'name' | 'carbs' | 'salt' | 'unit') => {
+    if (sortKey === key) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortDir('asc');
+    }
+  };
 
   const handleChange = (product: Product, field: keyof Product, value: string | number): void => {
     let updated = { ...product, [field]: value };
@@ -17,7 +28,22 @@ const ProductList: React.FC = () => {
     dispatch({ type: 'UPDATE_PRODUCT', product: updated });
   };
 
-  if (!state.products.length) {
+  const handleRemove = (productId: number) => {
+    dispatch({ type: 'REMOVE_PRODUCT_FROM_LIBRARY', productId });
+  };
+
+  // Sort products
+  const sortedProducts = [...state.products].sort((a, b) => {
+    let cmp = 0;
+    if (sortKey === 'name' || sortKey === 'unit') {
+      cmp = a[sortKey].localeCompare(b[sortKey]);
+    } else {
+      cmp = a[sortKey] - b[sortKey];
+    }
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+
+  if (!sortedProducts.length) {
     return (
       <Card>
         <CardContent className="pt-6">
@@ -37,22 +63,33 @@ const ProductList: React.FC = () => {
           <table className="w-full">
             <thead>
               <tr className="border-b">
-                <th className="text-left p-2 font-medium">Name</th>
-                <th className="text-left p-2 font-medium">Carbs (g/unit)</th>
-                <th className="text-left p-2 font-medium">Salt (g/unit)</th>
-                <th className="text-left p-2 font-medium">Unit</th>
+                <th className="text-left p-2 font-medium cursor-pointer select-none" onClick={() => handleSort('name')}>
+                  Name {sortKey === 'name' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th
+                  className="text-left p-2 font-medium cursor-pointer select-none"
+                  onClick={() => handleSort('carbs')}
+                >
+                  Carbs (g/unit) {sortKey === 'carbs' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="text-left p-2 font-medium cursor-pointer select-none" onClick={() => handleSort('salt')}>
+                  Salt (g/unit) {sortKey === 'salt' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="text-left p-2 font-medium cursor-pointer select-none" onClick={() => handleSort('unit')}>
+                  Unit {sortKey === 'unit' ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+                </th>
                 <th className="text-left p-2 font-medium"></th>
               </tr>
             </thead>
             <tbody>
-              {state.products.map((product, index) => (
+              {sortedProducts.map((product, index) => (
                 <tr key={product.id} className={index % 2 === 0 ? 'bg-muted/50' : ''}>
                   <td className="p-2">
                     <Input
                       name="name"
                       value={product.name}
                       onChange={e => handleChange(product, 'name', e.target.value)}
-                      className="w-full"
+                      className="w-full min-w-48"
                     />
                   </td>
                   <td className="p-2">
@@ -61,7 +98,6 @@ const ProductList: React.FC = () => {
                       type="number"
                       value={product.carbs}
                       onChange={e => handleChange(product, 'carbs', e.target.value)}
-                      className="w-28"
                     />
                   </td>
                   <td className="p-2">
@@ -70,7 +106,6 @@ const ProductList: React.FC = () => {
                       type="number"
                       value={product.salt}
                       onChange={e => handleChange(product, 'salt', e.target.value)}
-                      className="w-28"
                     />
                   </td>
                   <td className="p-2">
@@ -78,7 +113,7 @@ const ProductList: React.FC = () => {
                       value={product.unit}
                       onValueChange={value => handleChange(product, 'unit', value as 'liters' | 'items' | 'grams')}
                     >
-                      <SelectTrigger className="w-24">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -93,7 +128,7 @@ const ProductList: React.FC = () => {
                       variant="destructive"
                       size="sm"
                       title="Remove product"
-                      onClick={() => dispatch({ type: 'REMOVE_PRODUCT_FROM_LIBRARY', productId: product.id })}
+                      onClick={() => handleRemove(product.id)}
                     >
                       Remove
                     </Button>
