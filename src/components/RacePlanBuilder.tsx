@@ -15,7 +15,7 @@ const RacePlanBuilder: React.FC = () => {
         <div className="space-y-8">
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-2">Fueling Strategy</h2>
+              <h2 className="text-2xl font-semibold mb-2">Race Plan</h2>
             </div>
             <IntakePlan />
           </div>
@@ -24,7 +24,7 @@ const RacePlanBuilder: React.FC = () => {
 
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-2">Nutrition Products</h2>
+              <h2 className="text-2xl font-semibold mb-2">Products</h2>
             </div>
             <ProductForm />
             <ProductList />

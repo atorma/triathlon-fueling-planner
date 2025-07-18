@@ -4,7 +4,7 @@ import { Product } from '../types/nutrition';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 const ProductList: React.FC = () => {
   const { state, dispatch } = useNutrition();
@@ -41,6 +41,7 @@ const ProductList: React.FC = () => {
                 <th className="text-left p-2 font-medium">Carbs (g/unit)</th>
                 <th className="text-left p-2 font-medium">Salt (g/unit)</th>
                 <th className="text-left p-2 font-medium">Unit</th>
+                <th className="text-left p-2 font-medium"></th>
               </tr>
             </thead>
             <tbody>
@@ -87,16 +88,20 @@ const ProductList: React.FC = () => {
                       </SelectContent>
                     </Select>
                   </td>
+                  <td className="p-2">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      title="Remove product"
+                      onClick={() => dispatch({ type: 'REMOVE_PRODUCT_FROM_LIBRARY', productId: product.id })}
+                    >
+                      Remove
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Badge variant="secondary">Total Products: {state.products.length}</Badge>
-          <Badge variant="outline">Fluids: {state.products.filter(p => p.unit === 'liters').length}</Badge>
-          <Badge variant="outline">Solids: {state.products.filter(p => p.unit === 'items').length}</Badge>
         </div>
       </CardContent>
     </Card>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Stage } from '../types/nutrition';
+import { Separator } from '@/components/ui/separator';
 
 function pad(num: number): string {
   return num.toString().padStart(2, '0');
@@ -95,7 +96,7 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h3 className="text-1xl">{stage.name}</h3>
+          <h3 className="text-lg">{stage.name}</h3>
         </CardTitle>
         <div className="flex items-center gap-2 mt-2">
           <label htmlFor={`stage-time-${stage.id}`} className="text-base font-medium">
@@ -121,9 +122,9 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-2 font-medium">Product</th>
-                  <th className="text-left p-2 font-medium">Amount</th>
-                  <th className="text-left p-2 font-medium">Actions</th>
+                  <th className="text-left p-1 font-medium">Product</th>
+                  <th className="text-left p-1 font-medium">Amount</th>
+                  <th className="text-left p-1 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -131,16 +132,9 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
                   const product = state.products.find(p => p.id === assignment.productId);
                   if (!product) return null;
                   return (
-                    <tr key={assignment.productId} className="border-b">
-                      <td className="p-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{product.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {product.unit === 'grams' ? 'g' : product.unit}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="p-2">
+                    <tr key={assignment.productId}>
+                      <td className="p-1 text-sm">{product.name}</td>
+                      <td className="p-1">
                         <div className="flex items-center gap-2">
                           <Input
                             type="number"
@@ -150,17 +144,11 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
                             onChange={e => handleAmountChange(assignment.productId, e.target.value)}
                             className="w-20"
                           />
-                          <span className="text-sm text-muted-foreground">
-                            {product.unit === 'grams' ? 'g' : product.unit}
-                          </span>
+                          <span className="text-sm text-muted-foreground">{product.unit}</span>
                         </div>
                       </td>
-                      <td className="p-2">
-                        <Button
-                          onClick={() => handleRemoveProduct(assignment.productId)}
-                          variant="destructive"
-                          size="sm"
-                        >
+                      <td className="p-1">
+                        <Button onClick={() => handleRemoveProduct(assignment.productId)} size="sm">
                           Remove
                         </Button>
                       </td>
@@ -168,8 +156,8 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
                   );
                 })}
                 {availableProducts.length > 0 && (
-                  <tr>
-                    <td className="p-2" colSpan={3}>
+                  <tr className="border-t">
+                    <td className="p-1 pt-2" colSpan={3}>
                       <div className="flex gap-2 items-center">
                         <Select
                           value={selectedProduct ? selectedProduct.toString() : ''}
@@ -194,31 +182,33 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
             </table>
           </div>
         </div>
-        <Card className="bg-primary/5">
-          <CardContent className="pt-4">
-            <h4 className="font-medium mb-2">Stage Summary</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
-                <div className="font-medium">Total Carbs</div>
-                <div className="text-muted-foreground">{totalCarbs.toFixed(1)} g</div>
-              </div>
-              <div>
-                <div className="font-medium">Total Salt</div>
-                <div className="text-muted-foreground">{totalSalt.toFixed(1)} g</div>
-              </div>
-              <div>
-                <div className="font-medium">Total Fluid</div>
-                <div className="text-muted-foreground">{totalFluid.toFixed(2)} L</div>
-              </div>
-              <div>
-                <div className="font-medium">Per Hour</div>
-                <div className="text-muted-foreground">
-                  {rateCarbs.toFixed(1)} g/h carbs, {rateSalt.toFixed(1)} g/h salt, {rateFluid.toFixed(2)} L/h fluid
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <Separator />
+        <table className="w-full">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left p-1 font-medium">Nutrient</th>
+              <th className="text-left p-1 font-medium">Intake Rate</th>
+              <th className="text-left p-1 font-medium">Total Intake</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="p-1 text-sm">Carbs</td>
+              <td className="p-1 text-sm">{rateCarbs.toFixed(1)} g/h</td>
+              <td className="p-1 text-sm">{totalCarbs.toFixed(1)} g</td>
+            </tr>
+            <tr>
+              <td className="p-1 text-sm">Salt</td>
+              <td className="p-1 text-sm">{rateSalt.toFixed(1)} g/h</td>
+              <td className="p-1 text-sm">{totalSalt.toFixed(1)} g</td>
+            </tr>
+            <tr>
+              <td className="p-1 text-sm">Fluid</td>
+              <td className="p-1 text-sm">{rateFluid.toFixed(1)} L/h</td>
+              <td className="p-1 text-sm">{totalFluid.toFixed(1)} L</td>
+            </tr>
+          </tbody>
+        </table>
       </CardContent>
     </Card>
   );

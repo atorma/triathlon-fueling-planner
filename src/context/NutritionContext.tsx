@@ -107,6 +107,17 @@ function nutritionReducer(state: NutritionState, action: NutritionAction): Nutri
         assignments: { ...state.assignments, [stageKey]: updated },
       };
     }
+    case 'REMOVE_PRODUCT_FROM_LIBRARY': {
+      const { productId } = action;
+      // Remove product from products
+      const products = state.products.filter(p => p.id !== productId);
+      // Remove product from all assignments
+      const assignments: typeof state.assignments = {};
+      for (const [stageKey, assigns] of Object.entries(state.assignments)) {
+        assignments[stageKey] = assigns.filter(a => a.productId !== productId);
+      }
+      return { ...state, products, assignments };
+    }
     default:
       return state;
   }

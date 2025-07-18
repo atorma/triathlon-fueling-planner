@@ -45,6 +45,10 @@ export type NutritionAction =
       type: 'REMOVE_PRODUCT';
       stageId: string | number;
       productId: number;
+    }
+  | {
+      type: 'REMOVE_PRODUCT_FROM_LIBRARY';
+      productId: number;
     };
 
 export interface NutritionContextType {
