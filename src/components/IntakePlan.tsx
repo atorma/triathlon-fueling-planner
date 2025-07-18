@@ -59,6 +59,9 @@ const IntakePlan: React.FC = () => {
   const { state } = useNutrition();
   const allStages = state.stages;
   const raceTotals = computeRaceTotals(state.assignments, state.products, state.stages);
+  const raceHours = Math.floor(raceTotals.totalMinutes / 60);
+  const raceMinutes = raceTotals.totalMinutes % 60;
+  const raceDuration = `${raceHours}h ${raceMinutes}m`;
 
   return (
     <div className="space-y-6">
@@ -73,13 +76,12 @@ const IntakePlan: React.FC = () => {
           <CardTitle>Race Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="mb-4">
-            <div className="font-medium">Race Duration</div>
-            <div className="text-sm">
-              {Math.floor(raceTotals.totalMinutes / 60)}h {raceTotals.totalMinutes % 60}m
-            </div>
+          {/* Desktop */}
+          <div className="hidden md:block mb-4">
+            <div className="font-medium">Duration</div>
+            <div className="text-sm">{raceDuration}</div>
           </div>
-          <table className="w-full">
+          <table className="hidden md:table w-full">
             <thead>
               <tr className="border-b">
                 <th className="text-left p-1 font-medium">Nutrient</th>
@@ -105,6 +107,36 @@ const IntakePlan: React.FC = () => {
               </tr>
             </tbody>
           </table>
+          {/* Mobile Stacked */}
+          <div className="block md:hidden">
+            <div className="mb-2">
+              <div className="font-bold">Duration</div>
+              <div>{raceDuration}</div>
+            </div>
+            {[
+              {
+                name: 'Carbs',
+                rate: `${raceTotals.rateCarbs.toFixed(1)} g/h`,
+                total: `${raceTotals.totalCarbs.toFixed(1)} g`,
+              },
+              {
+                name: 'Salt',
+                rate: `${raceTotals.rateSalt.toFixed(1)} g/h`,
+                total: `${raceTotals.totalSalt.toFixed(1)} g`,
+              },
+              {
+                name: 'Fluid',
+                rate: `${raceTotals.rateFluid.toFixed(1)} L/h`,
+                total: `${raceTotals.totalFluid.toFixed(1)} L`,
+              },
+            ].map(n => (
+              <div key={n.name} className="mb-2">
+                <div className="font-bold">{n.name}</div>
+                <div>Intake Rate: {n.rate}</div>
+                <div>Total: {n.total}</div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { useNutrition } from '../context/NutritionContext';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
@@ -101,9 +102,7 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
           <h3 className="text-lg">{stage.name}</h3>
         </CardTitle>
         <div className="flex items-center gap-2 mt-2">
-          <label htmlFor={`stage-time-${stage.id}`} className="text-base font-medium">
-            Time:
-          </label>
+          <Label htmlFor={`stage-time-${stage.id}`}>Time:</Label>
           <Input
             id={`stage-time-${stage.id}`}
             type="text"
@@ -120,7 +119,8 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-4">
-          <div className="overflow-x-auto">
+          {/* Desktop Table */}
+          <div className="overflow-x-auto hidden md:block">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
@@ -133,12 +133,14 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
                 {assignments.map(assignment => {
                   const product = state.products.find(p => p.id === assignment.productId);
                   if (!product) return null;
+                  const inputId = `amount-${stage.id}-${assignment.productId}`;
                   return (
                     <tr key={assignment.productId}>
                       <td className="p-1 text-sm">{product.name}</td>
                       <td className="p-1">
                         <div className="flex items-center gap-2">
                           <Input
+                            id={inputId}
                             type="number"
                             min="0"
                             step="any"
@@ -183,9 +185,62 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
               </tbody>
             </table>
           </div>
+          {/* Mobile Stacked Cards */}
+          <div className="block md:hidden space-y-2">
+            {assignments.map(assignment => {
+              const product = state.products.find(p => p.id === assignment.productId);
+              if (!product) return null;
+              const inputId = `amount-${stage.id}-${assignment.productId}`;
+              return (
+                <div key={assignment.productId} className="border rounded p-2 bg-muted/50">
+                  <div className="mb-2">
+                    <div className="font-bold">{product.name}</div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor={inputId}>Amount:</Label>
+                      <Input
+                        id={inputId}
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={inputValues[assignment.productId] ?? assignment.quantity.toString()}
+                        onChange={e => handleAmountChange(assignment.productId, e.target.value)}
+                        className="w-20"
+                      />
+                      <span className="text-sm text-muted-foreground">{product.unit}</span>
+                    </div>
+                    <Button onClick={() => handleRemoveProduct(assignment.productId)} size="sm">
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+            {availableProducts.length > 0 && (
+              <div className="mt-2">
+                <Select
+                  value={selectedProduct ? selectedProduct.toString() : ''}
+                  onValueChange={value => handleAddProduct(parseInt(value))}
+                >
+                  <SelectTrigger id={`add-product-${stage.id}`} className="w-full">
+                    <SelectValue placeholder="Add product" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableProducts.map(product => (
+                      <SelectItem key={product.id} value={product.id.toString()}>
+                        {product.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
         </div>
         <Separator />
-        <table className="w-full">
+        {/* Desktop Table */}
+        <table className="hidden md:table w-full">
           <thead>
             <tr className="border-b">
               <th className="text-left p-1 font-medium">Nutrient</th>
@@ -211,6 +266,20 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
             </tr>
           </tbody>
         </table>
+        {/* Mobile Stacked Cards */}
+        <div className="block md:hidden space-y-2">
+          {[
+            { name: 'Carbs', rate: `${rateCarbs.toFixed(1)} g/h`, total: `${totalCarbs.toFixed(1)} g` },
+            { name: 'Salt', rate: `${rateSalt.toFixed(1)} g/h`, total: `${totalSalt.toFixed(1)} g` },
+            { name: 'Fluid', rate: `${rateFluid.toFixed(1)} L/h`, total: `${totalFluid.toFixed(1)} L` },
+          ].map(n => (
+            <div key={n.name} className="mb-2">
+              <div className="font-bold">{n.name}</div>
+              <div>Intake Rate: {n.rate}</div>
+              <div>Total: {n.total}</div>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

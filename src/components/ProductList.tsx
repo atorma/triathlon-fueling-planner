@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNutrition } from '../context/NutritionContext';
 import { Product } from '../types/nutrition';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -59,7 +60,8 @@ const ProductList: React.FC = () => {
         <CardTitle>Product Library</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
+        {/* Desktop Table */}
+        <div className="overflow-x-auto hidden md:block">
           <table className="w-full">
             <thead>
               <tr className="border-b">
@@ -137,6 +139,75 @@ const ProductList: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        {/* Mobile Stacked Cards */}
+        <div className="block md:hidden space-y-2">
+          {sortedProducts.map(product => {
+            const nameId = `name-${product.id}`;
+            const carbsId = `carbs-${product.id}`;
+            const saltId = `salt-${product.id}`;
+            const unitId = `unit-${product.id}`;
+            return (
+              <div key={product.id} className="border rounded p-2 bg-muted/50 grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={nameId}>Name</Label>
+                  <Input
+                    id={nameId}
+                    name="name"
+                    value={product.name}
+                    onChange={e => handleChange(product, 'name', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={carbsId}>Carbs (g/unit)</Label>
+                  <Input
+                    id={carbsId}
+                    name="carbs"
+                    type="number"
+                    value={product.carbs}
+                    onChange={e => handleChange(product, 'carbs', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={saltId}>Salt (g/unit)</Label>
+                  <Input
+                    id={saltId}
+                    name="salt"
+                    type="number"
+                    value={product.salt}
+                    onChange={e => handleChange(product, 'salt', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={unitId}>Unit</Label>
+                  <Select
+                    value={product.unit}
+                    onValueChange={value => handleChange(product, 'unit', value as 'liters' | 'items' | 'grams')}
+                  >
+                    <SelectTrigger id={unitId}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="liters">Liters</SelectItem>
+                      <SelectItem value="items">Items</SelectItem>
+                      <SelectItem value="grams">Grams</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  title="Remove product"
+                  onClick={() => handleRemove(product.id)}
+                  className="mt-2"
+                  id={`remove-${product.id}`}
+                >
+                  Remove
+                </Button>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
