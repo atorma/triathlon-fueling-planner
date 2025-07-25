@@ -1,4 +1,4 @@
-import React, { useState, useId } from 'react';
+import React, { useState } from 'react';
 import { useNutrition } from '../context/NutritionContext';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,11 +29,6 @@ const RaceLeg: React.FC<{ stage: Stage }> = ({ stage }) => {
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [timeInput, setTimeInput] = useState(() => (stage ? formatTime(stage.duration) : '0:00'));
   const [selectedProduct, setSelectedProduct] = useState<number>(0);
-
-  // Keep local time input in sync if stage changes
-  React.useEffect(() => {
-    setTimeInput(formatTime(stage.duration));
-  }, [stage.duration]);
 
   const handleTimeChange = (value: string) => {
     setTimeInput(value);
