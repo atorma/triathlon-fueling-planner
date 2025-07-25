@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: trifueling
+  namespace: default
+spec:
+  secretName: trifueling-certificate-secret
+  dnsNames:
+    - trifueling.atorma.fi
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: default
+  name: trifueling
+  labels:
+    app: trifueling
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: trifueling.atorma.fi
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: trifueling
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - trifueling.atorma.fi
+      secretName: trifueling-certificate-secret

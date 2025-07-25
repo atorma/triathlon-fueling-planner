@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: trifueling
+  labels:
+    app: trifueling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trifueling
+  template:
+    metadata:
+      name: trifueling
+      labels:
+        app: trifueling
+    spec:
+      containers:
+        - name: trifueling-server
+          image: trifueling-image
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 5m
+              memory: 50Mi
+      restartPolicy: Always
